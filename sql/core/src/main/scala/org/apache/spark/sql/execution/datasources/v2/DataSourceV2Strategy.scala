@@ -219,7 +219,7 @@ class DataSourceV2Strategy(session: SparkSession) extends Strategy with Predicat
       }
 
     case AppendData(r: DataSourceV2Relation, query, _, _, Some(write)) =>
-      AppendDataExec(planLater(query), refreshCache(r), write) :: Nil
+      AppendDataExec(planLater(query), refreshCache(r), write, r.table) :: Nil
 
     case OverwriteByExpression(r @ DataSourceV2Relation(v1: SupportsWrite, _, _, _, _), _, query,
         _, _, Some(write)) if v1.supports(TableCapability.V1_BATCH_WRITE) =>
@@ -232,10 +232,10 @@ class DataSourceV2Strategy(session: SparkSession) extends Strategy with Predicat
       }
 
     case OverwriteByExpression(r: DataSourceV2Relation, _, query, _, _, Some(write)) =>
-      OverwriteByExpressionExec(planLater(query), refreshCache(r), write) :: Nil
+      OverwriteByExpressionExec(planLater(query), refreshCache(r), write, r.table) :: Nil
 
     case OverwritePartitionsDynamic(r: DataSourceV2Relation, query, _, _, Some(write)) =>
-      OverwritePartitionsDynamicExec(planLater(query), refreshCache(r), write) :: Nil
+      OverwritePartitionsDynamicExec(planLater(query), refreshCache(r), write, r.table) :: Nil
 
     case DeleteFromTable(relation, condition) =>
       relation match {
