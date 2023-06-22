@@ -149,6 +149,9 @@ private[spark] class HadoopDelegationTokenManager(
           creds.addAll(newTokens)
         }
       })
+      if(!currentUser.equals(freshUGI)) {
+        FileSystem.closeAllForUGI(freshUGI)
+      }
     }
   }
 
